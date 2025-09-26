@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa SMPN 17 Depok</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Popup Selamat Datang -->
+    <div id="welcomePopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 mx-4 max-w-md w-full text-center slide-up">
+            <div class="text-6xl mb-4">🏫</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang!</h2>
+            <p class="text-gray-600 mb-6">Aplikasi Absensi Siswa<br><strong>SMPN 17 Depok</strong><br>Tahun 2025</p>
+            <button onclick="closeWelcomePopup()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition-colors">
+                Mulai
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden min-h-screen p-4">
+        <!-- Header -->
+        <div class="bg-white rounded-xl p-4 mb-3 card-shadow">
+            <div class="text-center mb-3">
+                <h1 class="text-lg font-bold text-gray-800">SMPN 17 Depok</h1>
+                <p class="text-xs text-gray-600">Sistem Absensi Siswa 2025</p>
+            </div>
+            
+            <!-- Date, Time, and Location Status -->
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-blue-50 rounded-lg p-2">
+                    <div class="text-xs text-gray-600 mb-1">Tanggal</div>
+                    <div id="currentDate" class="text-xs font-semibold text-blue-600"></div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-2">
+                    <div class="text-xs text-gray-600 mb-1">Jam</div>
+                    <div id="currentTime" class="text-xs font-semibold text-green-600"></div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2">
+                    <div class="text-xs text-gray-600 mb-1">📍 Lokasi</div>
+                    <div id="locationStatus" class="text-xs font-semibold">
+                        <div class="text-gray-500 pulse-animation">Mengecek...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Navigation -->
+        <div class="bg-white rounded-xl p-3 mb-3 card-shadow">
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="showMenu('absensi')" id="menuAbsensi" class="w-full py-3 rounded-lg font-semibold text-sm bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span class="text-lg">✅</span>
+                    <span>ABSENSI</span>
+                </button>
+                
+                <button onclick="showMenu('laporan')" id="menuLaporan" class="w-full py-3 rounded-lg font-semibold text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span class="text-lg">📊</span>
+                    <span>LAPORAN</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Absensi -->
+        <div id="menuAbsensiContent" class="space-y-3">
+            <!-- Form Input -->
+            <div class="bg-white rounded-xl p-4 card-shadow">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">📝 Form Absensi</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="studentName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Kelas</label>
+                        <select id="studentClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="7.1">7.1</option>
+                            <option value="7.2">7.2</option>
+                            <option value="7.3">7.3</option>
+                            <option value="7.4">7.4</option>
+                            <option value="7.5">7.5</option>
+                            <option value="7.6">7.6</option>
+                            <option value="7.7">7.7</option>
+                            <option value="7.8">7.8</option>
+                            <option value="8.1">8.1</option>
+                            <option value="8.2">8.2</option>
+                            <option value="8.3">8.3</option>
+                            <option value="8.4">8.4</option>
+                            <option value="8.5">8.5</option>
+                            <option value="8.6">8.6</option>
+                            <option value="8.7">8.7</option>
+                            <option value="8.8">8.8</option>
+                            <option value="8.9">8.9</option>
+                            <option value="8.10">8.10</option>
+                            <option value="9.1">9.1</option>
+                            <option value="9.2">9.2</option>
+                            <option value="9.3">9.3</option>
+                            <option value="9.4">9.4</option>
+                            <option value="9.5">9.5</option>
+                            <option value="9.6">9.6</option>
+                            <option value="9.7">9.7</option>
+                            <option value="9.8">9.8</option>
+                            <option value="9.9">9.9</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <!-- Tombol Absen -->
+            <div class="bg-white rounded-xl p-4 card-shadow">
+                <button id="attendanceBtn" onclick="submitAttendance()" disabled class="w-full py-4 rounded-lg font-semibold text-lg transition-all duration-300 bg-gray-400 text-gray-600 cursor-not-allowed">
+                    <span id="btnText">Mengecek Lokasi...</span>
+                </button>
+                <div id="attendanceMessage" class="mt-3 text-center hidden"></div>
+            </div>
+        </div>
+
+        <!-- Menu Laporan -->
+        <div id="menuLaporanContent" class="hidden space-y-3">
+            <!-- Filter Section -->
+            <div class="bg-white rounded-2xl p-6 card-shadow">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">🔍 Filter Laporan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas</label>
+                        <select id="classFilter" onchange="filterReport()" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Semua Kelas</option>
+                            <option value="7.1">7.1</option>
+                            <option value="7.2">7.2</option>
+                            <option value="7.3">7.3</option>
+                            <option value="7.4">7.4</option>
+                            <option value="7.5">7.5</option>
+                            <option value="7.6">7.6</option>
+                            <option value="7.7">7.7</option>
+                            <option value="7.8">7.8</option>
+                            <option value="8.1">8.1</option>
+                            <option value="8.2">8.2</option>
+                            <option value="8.3">8.3</option>
+                            <option value="8.4">8.4</option>
+                            <option value="8.5">8.5</option>
+                            <option value="8.6">8.6</option>
+                            <option value="8.7">8.7</option>
+                            <option value="8.8">8.8</option>
+                            <option value="8.9">8.9</option>
+                            <option value="8.10">8.10</option>
+                            <option value="9.1">9.1</option>
+                            <option value="9.2">9.2</option>
+                            <option value="9.3">9.3</option>
+                            <option value="9.4">9.4</option>
+                            <option value="9.5">9.5</option>
+                            <option value="9.6">9.6</option>
+                            <option value="9.7">9.7</option>
+                            <option value="9.8">9.8</option>
+                            <option value="9.9">9.9</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="exportReport()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-semibold transition-colors">
+                            📥 Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-2xl p-6 card-shadow">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="totalToday">0</div>
+                        <div class="text-sm text-gray-600">Absen Hari Ini</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 card-shadow">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="totalWeek">0</div>
+                        <div class="text-sm text-gray-600">Total Minggu Ini</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 card-shadow">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600" id="totalAll">0</div>
+                        <div class="text-sm text-gray-600">Total Keseluruhan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Data -->
+            <div class="bg-white rounded-2xl p-6 card-shadow">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 Daftar Siswa Absen</h3>
+                <div id="attendanceReport" class="space-y-3">
+                    <div class="text-gray-500 text-center">Belum ada data absensi</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Koordinat sekolah SMPN 17 Depok
+        const SCHOOL_LAT = -6.338639;
+        const SCHOOL_LNG = 106.786593;
+        const MAX_DISTANCE = 100; // meter
+        
+        let userLocation = null;
+        let hasAttended = false;
+        let currentMenu = 'absensi';
+        
+        // Cek apakah sudah absen hari ini
+        function checkTodayAttendance() {
+            const today = new Date().toDateString();
+            const attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+            const userIP = localStorage.getItem('userIP') || 'unknown';
+            
+            return attendanceData.some(record => 
+                record.date === today && record.ip === userIP
+            );
+        }
+        
+        // Simulasi mendapatkan IP
+        function getUserIP() {
+            let userIP = localStorage.getItem('userIP');
+            if (!userIP) {
+                userIP = 'IP_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userIP', userIP);
+            }
+            return userIP;
+        }
+        
+        // Hitung jarak antara dua koordinat
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371e3; // Radius bumi dalam meter
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lng2-lng1) * Math.PI/180;
+            
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            
+            return R * c;
+        }
+        
+        // Update waktu dan tanggal
+        function updateDateTime() {
+            const now = new Date();
+            
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('id-ID', dateOptions);
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('id-ID', timeOptions);
+        }
+        
+        // Show menu
+        function showMenu(menu) {
+            currentMenu = menu;
+            
+            // Update button styles
+            const menuAbsensi = document.getElementById('menuAbsensi');
+            const menuLaporan = document.getElementById('menuLaporan');
+            const absensiContent = document.getElementById('menuAbsensiContent');
+            const laporanContent = document.getElementById('menuLaporanContent');
+            
+            if (menu === 'absensi') {
+                menuAbsensi.className = 'w-full py-3 rounded-lg font-semibold text-sm bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center space-x-2';
+                menuLaporan.className = 'w-full py-3 rounded-lg font-semibold text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 transition-all duration-300 flex items-center justify-center space-x-2';
+                absensiContent.classList.remove('hidden');
+                laporanContent.classList.add('hidden');
+            } else {
+                menuLaporan.className = 'w-full py-3 rounded-lg font-semibold text-sm bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 flex items-center justify-center space-x-2';
+                menuAbsensi.className = 'w-full py-3 rounded-lg font-semibold text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 transition-all duration-300 flex items-center justify-center space-x-2';
+                laporanContent.classList.remove('hidden');
+                absensiContent.classList.add('hidden');
+                loadReportData();
+                updateStatistics();
+            }
+        }
+        
+        // Dapatkan lokasi pengguna
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        const distance = calculateDistance(
+                            userLocation.lat, userLocation.lng,
+                            SCHOOL_LAT, SCHOOL_LNG
+                        );
+                        
+                        updateLocationStatus(distance);
+                    },
+                    function(error) {
+                        document.getElementById('locationStatus').innerHTML = 
+                            '<div class="text-red-500">❌ Tidak dapat mengakses lokasi</div>';
+                        document.getElementById('btnText').textContent = 'Lokasi Tidak Tersedia';
+                    }
+                );
+            } else {
+                document.getElementById('locationStatus').innerHTML = 
+                    '<div class="text-red-500">❌ Geolokasi tidak didukung</div>';
+            }
+        }
+        
+        // Update status lokasi
+        function updateLocationStatus(distance) {
+            const locationDiv = document.getElementById('locationStatus');
+            const attendanceBtn = document.getElementById('attendanceBtn');
+            const btnText = document.getElementById('btnText');
+            
+            if (hasAttended) {
+                locationDiv.innerHTML = '<div class="text-blue-500">✅ Sudah Absen</div>';
+                attendanceBtn.className = 'w-full py-4 rounded-lg font-semibold text-lg bg-blue-400 text-white cursor-not-allowed';
+                btnText.textContent = 'Sudah Absen Hari Ini';
+                attendanceBtn.disabled = true;
+                return;
+            }
+            
+            if (distance <= MAX_DISTANCE) {
+                locationDiv.innerHTML = '<div class="text-green-500">✅ Valid</div>';
+                attendanceBtn.className = 'w-full py-4 rounded-lg font-semibold text-lg bg-green-500 hover:bg-green-600 text-white transition-all duration-300';
+                btnText.textContent = 'ABSEN SEKARANG';
+                attendanceBtn.disabled = false;
+            } else {
+                locationDiv.innerHTML = '<div class="text-red-500">❌ Jauh</div>';
+                attendanceBtn.className = 'w-full py-4 rounded-lg font-semibold text-lg bg-gray-400 text-gray-600 cursor-not-allowed';
+                btnText.textContent = 'Jarak Terlalu Jauh';
+                attendanceBtn.disabled = true;
+            }
+        }
+        
+        // Konfigurasi Google Apps Script Web App
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycqkYwfyM_PsTi8IgQJYLPKlxXZnVEJCPGxiMnm_GEivwGMEaek2Stprk9QIclBX6O/exec';
+        
+        // URL publikasi Google Spreadsheet untuk mengambil data
+        const SPREADSHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9aUnVFC0WxT9XJhZC_GzlCDl5uHRApFdvTGJzhXlr5Z5hTEq53husK6LKVJ4EpziC1R5-jQuqfoKI/pub?output=csv';
+        
+        // Submit absensi
+        async function submitAttendance() {
+            const name = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value;
+            
+            if (!name || !studentClass) {
+                alert('Mohon lengkapi nama dan kelas terlebih dahulu!');
+                return;
+            }
+            
+            if (hasAttended) {
+                alert('Anda sudah absen hari ini!');
+                return;
+            }
+            
+            // Show loading state
+            const btnText = document.getElementById('btnText');
+            const originalText = btnText.textContent;
+            btnText.textContent = 'Menyimpan ke Spreadsheet...';
+            document.getElementById('attendanceBtn').disabled = true;
+            
+            const now = new Date();
+            const userIP = getUserIP();
+            
+            const newRecord = {
+                name: name,
+                class: studentClass,
+                attendanceTime: now.toLocaleTimeString('id-ID'),
+                date: now.toLocaleDateString('id-ID'),
+                time: now.toLocaleTimeString('id-ID'),
+                timestamp: now.toISOString(),
+                ip: userIP,
+                latitude: userLocation ? userLocation.lat : 'N/A',
+                longitude: userLocation ? userLocation.lng : 'N/A'
+            };
+            
+            try {
+                // Kirim ke Google Spreadsheet
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newRecord)
+                });
+                
+                // Simpan juga ke localStorage sebagai backup
+                const attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                attendanceData.push(newRecord);
+                localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                
+                hasAttended = true;
+                
+                // Update UI - Success
+                document.getElementById('attendanceMessage').innerHTML = 
+                    '<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl">✅ Absensi berhasil dicatat ke Spreadsheet!</div>';
+                document.getElementById('attendanceMessage').classList.remove('hidden');
+                
+                updateLocationStatus(0);
+                
+                // Clear form
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentClass').value = '';
+                
+            } catch (error) {
+                console.error('Error sending to spreadsheet:', error);
+                
+                // Fallback: simpan ke localStorage saja
+                const attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                attendanceData.push(newRecord);
+                localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                
+                hasAttended = true;
+                
+                // Update UI - Fallback success
+                document.getElementById('attendanceMessage').innerHTML = 
+                    '<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-xl">⚠️ Absensi tersimpan lokal (Spreadsheet tidak tersedia)</div>';
+                document.getElementById('attendanceMessage').classList.remove('hidden');
+                
+                updateLocationStatus(0);
+                
+                // Clear form
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentClass').value = '';
+            }
+        }
+        
+        // Ambil data dari Google Spreadsheet
+        async function fetchSpreadsheetData() {
+            try {
+                const response = await fetch(SPREADSHEET_CSV_URL);
+                const csvText = await response.text();
+                
+                // Parse CSV ke array
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(',');
+                const data = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        const values = lines[i].split(',');
+                        const record = {};
+                        
+                        headers.forEach((header, index) => {
+                            // Bersihkan header dan value dari quotes
+                            const cleanHeader = header.replace(/"/g, '').trim();
+                            const cleanValue = values[index] ? values[index].replace(/"/g, '').trim() : '';
+                            
+                            // Map ke format yang digunakan aplikasi
+                            switch(cleanHeader) {
+                                case 'Nama Siswa':
+                                    record.name = cleanValue;
+                                    break;
+                                case 'Kelas':
+                                    record.class = cleanValue;
+                                    break;
+                                case 'Jam Absen':
+                                    record.attendanceTime = cleanValue;
+                                    break;
+                                case 'Tanggal':
+                                    record.date = cleanValue;
+                                    break;
+                                case 'Waktu Input':
+                                    record.time = cleanValue;
+                                    break;
+                                case 'Timestamp':
+                                    record.timestamp = cleanValue;
+                                    break;
+                                case 'IP Address':
+                                    record.ip = cleanValue;
+                                    break;
+                                case 'Status':
+                                    record.status = cleanValue;
+                                    break;
+                            }
+                        });
+                        
+                        if (record.name) { // Hanya tambahkan jika ada nama
+                            data.push(record);
+                        }
+                    }
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching spreadsheet data:', error);
+                return [];
+            }
+        }
+        
+        // Filter report data
+        function filterReport() {
+            loadReportData();
+        }
+        
+        // Load report data with filters
+        async function loadReportData() {
+            const classFilter = document.getElementById('classFilter').value;
+            const reportDiv = document.getElementById('attendanceReport');
+            
+            // Show loading
+            reportDiv.innerHTML = '<div class="text-center text-gray-500"><div class="pulse-animation">📊 Memuat data dari Spreadsheet...</div></div>';
+            
+            try {
+                // Ambil data dari spreadsheet
+                const spreadsheetData = await fetchSpreadsheetData();
+                
+                // Gabungkan dengan data lokal sebagai backup
+                const localData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                
+                // Prioritaskan data dari spreadsheet, gunakan lokal sebagai fallback
+                let attendanceData = spreadsheetData.length > 0 ? spreadsheetData : localData;
+                
+                // Filter by class
+                if (classFilter) {
+                    attendanceData = attendanceData.filter(record => record.class === classFilter);
+                }
+                
+                if (attendanceData.length === 0) {
+                    reportDiv.innerHTML = '<div class="text-gray-500 text-center">Tidak ada data absensi</div>';
+                    return;
+                }
+                
+                // Sort by timestamp (newest first)
+                attendanceData.sort((a, b) => {
+                    const dateA = new Date(a.timestamp || a.date + ' ' + a.time);
+                    const dateB = new Date(b.timestamp || b.date + ' ' + b.time);
+                    return dateB - dateA;
+                });
+                
+                let reportHTML = '';
+                attendanceData.forEach((record, index) => {
+                    // Format tanggal
+                    let formattedDate = record.date;
+                    try {
+                        const recordDate = new Date(record.date);
+                        if (!isNaN(recordDate.getTime())) {
+                            formattedDate = recordDate.toLocaleDateString('id-ID', { 
+                                weekday: 'short', 
+                                day: 'numeric', 
+                                month: 'short' 
+                            });
+                        }
+                    } catch (e) {
+                        // Gunakan format asli jika parsing gagal
+                    }
+                    
+                    reportHTML += `
+                        <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-green-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-semibold text-gray-800">${record.name}</div>
+                                    <div class="text-sm text-gray-600">Kelas: ${record.class}</div>
+                                    <div class="text-sm text-gray-600">Jam Absen: ${record.attendanceTime || 'Tidak tercatat'}</div>
+                                    <div class="text-sm text-gray-600">Tanggal: ${formattedDate}</div>
+                                    <div class="text-sm text-gray-600">Waktu Input: ${record.time}</div>
+                                    ${spreadsheetData.length > 0 ? '<div class="text-xs text-blue-500 mt-1">📊 Data dari Spreadsheet</div>' : '<div class="text-xs text-orange-500 mt-1">💾 Data Lokal</div>'}
+                                </div>
+                                <div class="text-green-500 text-xl">✅</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                reportDiv.innerHTML = reportHTML;
+                
+            } catch (error) {
+                console.error('Error loading report data:', error);
+                
+                // Fallback ke data lokal
+                const localData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                let filteredData = localData;
+                
+                if (classFilter) {
+                    filteredData = filteredData.filter(record => record.class === classFilter);
+                }
+                
+                if (filteredData.length === 0) {
+                    reportDiv.innerHTML = '<div class="text-gray-500 text-center">❌ Tidak dapat memuat data dari Spreadsheet<br>Tidak ada data lokal tersedia</div>';
+                    return;
+                }
+                
+                // Tampilkan data lokal dengan peringatan
+                let reportHTML = '<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-xl mb-4">⚠️ Menampilkan data lokal (Spreadsheet tidak dapat diakses)</div>';
+                
+                filteredData.sort((a, b) => {
+                    const dateA = new Date(a.date + ' ' + a.time);
+                    const dateB = new Date(b.date + ' ' + b.time);
+                    return dateB - dateA;
+                });
+                
+                filteredData.forEach((record, index) => {
+                    const recordDate = new Date(record.date);
+                    const formattedDate = recordDate.toLocaleDateString('id-ID', { 
+                        weekday: 'short', 
+                        day: 'numeric', 
+                        month: 'short' 
+                    });
+                    
+                    reportHTML += `
+                        <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-orange-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-semibold text-gray-800">${record.name}</div>
+                                    <div class="text-sm text-gray-600">Kelas: ${record.class}</div>
+                                    <div class="text-sm text-gray-600">Jam Absen: ${record.attendanceTime || 'Tidak tercatat'}</div>
+                                    <div class="text-sm text-gray-600">Tanggal: ${formattedDate}</div>
+                                    <div class="text-sm text-gray-600">Waktu Input: ${record.time}</div>
+                                    <div class="text-xs text-orange-500 mt-1">💾 Data Lokal</div>
+                                </div>
+                                <div class="text-green-500 text-xl">✅</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                reportDiv.innerHTML = reportHTML;
+            }
+        }
+        
+        // Update statistics
+        async function updateStatistics() {
+            try {
+                // Ambil data dari spreadsheet
+                const spreadsheetData = await fetchSpreadsheetData();
+                
+                // Gunakan data spreadsheet jika tersedia, fallback ke lokal
+                const localData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                const attendanceData = spreadsheetData.length > 0 ? spreadsheetData : localData;
+                
+                const today = new Date().toLocaleDateString('id-ID');
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                
+                // Count today's attendance
+                const todayCount = attendanceData.filter(record => {
+                    // Coba berbagai format tanggal
+                    return record.date === today || 
+                           record.date === new Date().toDateString() ||
+                           record.date === new Date().toLocaleDateString();
+                }).length;
+                document.getElementById('totalToday').textContent = todayCount;
+                
+                // Count this week's attendance
+                const weekCount = attendanceData.filter(record => {
+                    try {
+                        const recordDate = new Date(record.date);
+                        return recordDate >= weekAgo && !isNaN(recordDate.getTime());
+                    } catch (e) {
+                        return false;
+                    }
+                }).length;
+                document.getElementById('totalWeek').textContent = weekCount;
+                
+                // Count total attendance
+                document.getElementById('totalAll').textContent = attendanceData.length;
+                
+            } catch (error) {
+                console.error('Error updating statistics:', error);
+                
+                // Fallback ke data lokal
+                const attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                const today = new Date().toDateString();
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                
+                const todayCount = attendanceData.filter(record => record.date === today).length;
+                document.getElementById('totalToday').textContent = todayCount;
+                
+                const weekCount = attendanceData.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate >= weekAgo;
+                }).length;
+                document.getElementById('totalWeek').textContent = weekCount;
+                
+                document.getElementById('totalAll').textContent = attendanceData.length;
+            }
+        }
+        
+        // Export report data
+        async function exportReport() {
+            try {
+                // Ambil data dari spreadsheet
+                const spreadsheetData = await fetchSpreadsheetData();
+                
+                // Gunakan data spreadsheet jika tersedia, fallback ke lokal
+                const localData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                const attendanceData = spreadsheetData.length > 0 ? spreadsheetData : localData;
+                
+                if (attendanceData.length === 0) {
+                    alert('Tidak ada data untuk diekspor!');
+                    return;
+                }
+                
+                // Create CSV content
+                let csvContent = 'Nama,Kelas,Jam Absen,Tanggal,Waktu Input,Status\n';
+                attendanceData.forEach(record => {
+                    csvContent += `"${record.name}","${record.class}","${record.attendanceTime || 'Tidak tercatat'}","${record.date}","${record.time}","${record.status || 'Hadir'}"\n`;
+                });
+                
+                // Create and download file
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                
+                const dataSource = spreadsheetData.length > 0 ? 'spreadsheet' : 'lokal';
+                link.setAttribute('download', `absensi_smpn17_${dataSource}_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                alert(`✅ Data berhasil diekspor!\nSumber: ${spreadsheetData.length > 0 ? 'Google Spreadsheet' : 'Data Lokal'}\nTotal: ${attendanceData.length} record`);
+                
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                
+                // Fallback ke data lokal
+                const attendanceData = JSON.parse(localStorage.getItem('attendanceData') || '[]');
+                
+                if (attendanceData.length === 0) {
+                    alert('Tidak ada data untuk diekspor!');
+                    return;
+                }
+                
+                let csvContent = 'Nama,Kelas,Jam Absen,Tanggal,Waktu Input\n';
+                attendanceData.forEach(record => {
+                    csvContent += `"${record.name}","${record.class}","${record.attendanceTime || 'Tidak tercatat'}","${record.date}","${record.time}"\n`;
+                });
+                
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `absensi_smpn17_lokal_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                alert('⚠️ Data diekspor dari penyimpanan lokal (Spreadsheet tidak dapat diakses)');
+            }
+        }
+        
+        // Close welcome popup
+        function closeWelcomePopup() {
+            document.getElementById('welcomePopup').style.display = 'none';
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+        
+        // Initialize app
+        function initApp() {
+            // Cek apakah sudah absen hari ini
+            hasAttended = checkTodayAttendance();
+            getUserIP();
+            
+            // Update waktu setiap detik
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            // Dapatkan lokasi pengguna
+            getUserLocation();
+            
+            // Show default menu
+            showMenu('absensi');
+        }
+        
+        // Start app when page loads
+        window.addEventListener('load', initApp);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984ffdd722a17e17',t:'MTc1ODg2MDY2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
